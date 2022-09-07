@@ -1,38 +1,28 @@
-from collections import namedtuple
-import altair as alt
-import math
-import pandas as pd
-import streamlit as st
 
-"""
-# Welcome to Streamlit!
+import matplotlib.animation
+import matplotlib.pyplot as plt
+import numpy as np
+plt.rcParams["animation.html"] = "jshtml"
+plt.rcParams['figure.dpi'] = 150  
+plt.ioff()
 
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:
+fig = plt.figure()
 
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
+def animate(k):
+    plt.cla()
+    t = 0.1*k
 
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+    plt.scatter(186.64*t, 50*t - 0.5*10*t**2)#para 15graus (50/tg15=vox)
+    plt.scatter(86.61*t, 50*t - 0.5*10*t**2)#para 30 graus (50/tg30=vox)
+    plt.scatter(50*t, 50*t - 0.5*10*t**2)#para 45 graus (50/tg45=vox)
+    plt.scatter(28.867*t, 50*t - 0.5*10*t**2)#para 60 graus (50/tg60=vox)
+    plt.scatter(13.397*t, 50*t - 0.5*10*t**2)#para 75 graus (50/tg75=vox)
+    
+    plt.xlim(0,2000)
+    plt.ylim(0,500)
 
-
-with st.echo(code_location='below'):
-    total_points = st.slider("Number of points in spiral", 1, 5000, 2000)
-    num_turns = st.slider("Number of turns in spiral", 1, 100, 9)
-
-    Point = namedtuple('Point', 'x y')
-    data = []
-
-    points_per_turn = total_points / num_turns
-
-    for curr_point_num in range(total_points):
-        curr_turn, i = divmod(curr_point_num, points_per_turn)
-        angle = (curr_turn + 1) * 2 * math.pi * i / points_per_turn
-        radius = curr_point_num / total_points
-        x = radius * math.cos(angle)
-        y = radius * math.sin(angle)
-        data.append(Point(x, y))
-
-    st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
-        .mark_circle(color='#0068c9', opacity=0.5)
-        .encode(x='x:Q', y='y:Q'))
+anim = matplotlib.animation.FuncAnimation(fig, animate, frames=100, interval=10)
+# to save the animation, uncomment the following three lines
+f = r"Animacao.mp4" 
+writervideo = matplotlib.animation.FFMpegWriter(fps=60) 
+anim.save(f, writer=writervideo,dpi =150)
